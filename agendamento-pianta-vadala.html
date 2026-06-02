@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendar Evento — Pianta Vadalá Advocacia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2e45;
+    --navy-light: #243b55;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #f5f0e8;
+    --cream-dark: #ede5d4;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --white: #ffffff;
+    --error: #c0392b;
+    --success: #1a6b4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px 60px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0; right: 0;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 680px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 16px;
+  }
+
+  .logo-area {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: var(--navy);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .logo-icon::after {
+    content: '⚖';
+    font-size: 22px;
+    filter: sepia(1) saturate(3) hue-rotate(10deg);
+  }
+
+  .logo-text {
+    text-align: left;
+  }
+
+  .logo-text .firm {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.02em;
+    display: block;
+  }
+
+  .logo-text .tagline {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .divider-gold {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 20px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 34px);
+    color: var(--navy);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 40px rgba(13,27,42,0.10), 0 1px 4px rgba(13,27,42,0.06);
+    border: 1px solid rgba(201,168,76,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--navy), var(--gold));
+  }
+
+  /* Section */
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cream-dark);
+  }
+
+  /* Form groups */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-row.full { grid-template-columns: 1fr; }
+
+  @media (max-width: 540px) {
+    .form-row { grid-template-columns: 1fr; }
+    .card { padding: 28px 20px; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+
+  label .req {
+    color: var(--gold);
+    margin-left: 2px;
+  }
+
+  input, select, textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text);
+    background: var(--cream);
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 12px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    width: 100%;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #b0b8c1;
+    font-weight: 300;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+  }
+
+  input.error, select.error, textarea.error {
+    border-color: var(--error);
+    background: #fff5f5;
+  }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .field-error {
+    font-size: 11px;
+    color: var(--error);
+    font-weight: 400;
+    display: none;
+  }
+
+  .field-error.visible { display: block; }
+
+  /* Separator */
+  .sep {
+    height: 1px;
+    background: var(--cream-dark);
+    margin: 28px 0;
+  }
+
+  /* Info box */
+  .info-box {
+    background: linear-gradient(135deg, rgba(13,27,42,0.04), rgba(201,168,76,0.06));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .info-box .icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: var(--navy-mid);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .info-box strong { font-weight: 500; color: var(--navy); }
+
+  /* Submit */
+  .btn-submit {
+    width: 100%;
+    padding: 16px 24px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(201,168,76,0.15));
+    pointer-events: none;
+  }
+
+  .btn-submit:hover {
+    background: var(--navy-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(13,27,42,0.2);
+  }
+
+  .btn-submit:active { transform: translateY(0); }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-submit .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .btn-submit.loading .spinner { display: block; }
+  .btn-submit.loading .btn-text { opacity: 0.6; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Success state */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .success-screen.visible { display: block; }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+    box-shadow: 0 8px 32px rgba(13,27,42,0.2);
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 400px;
+    margin: 0 auto 24px;
+  }
+
+  .success-detail {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: left;
+    margin: 20px 0;
+    border: 1px solid var(--cream-dark);
+  }
+
+  .success-detail .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    font-size: 14px;
+  }
+
+  .success-detail .row:last-child { border-bottom: none; }
+  .success-detail .row .key { color: var(--muted); font-weight: 300; }
+  .success-detail .row .val { color: var(--navy); font-weight: 500; }
+
+  .btn-novo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 1.5px solid var(--navy);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-novo:hover {
+    background: var(--navy);
+    color: white;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .footer a { color: var(--gold); text-decoration: none; }
+
+  /* Error alert */
+  .alert-error {
+    background: #fff5f5;
+    border: 1px solid rgba(192,57,43,0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--error);
+    margin-bottom: 20px;
+    display: none;
+  }
+  .alert-error.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon"></div>
+      <div class="logo-text">
+        <span class="firm">Pianta Vadalá</span>
+        <span class="tagline">Advocacia</span>
+      </div>
+    </div>
+    <div class="divider-gold"></div>
+    <h1>Agendar Reunião ou Consulta</h1>
+    <p>Preencha os dados abaixo. Você receberá uma confirmação<br>automática via WhatsApp assim que o agendamento for registrado.</p>
+  </div>
+
+  <!-- Card -->
+  <div class="card" id="formCard">
+
+    <div class="info-box">
+      <div class="icon">🔔</div>
+      <p><strong>Lembretes automáticos:</strong> Você receberá avisos no WhatsApp 3 dias, 1 dia e 2 horas antes do evento. Nenhuma audiência ou reunião será esquecida.</p>
+    </div>
+
+    <div class="alert-error" id="alertError"></div>
+
+    <form id="agendaForm" novalidate>
+
+      <!-- Dados do evento -->
+      <div class="section-label">Dados do Evento</div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="tipo">Tipo de Evento <span class="req">*</span></label>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecione...</option>
+            <option value="reuniao">Reunião</option>
+            <option value="consulta">Consulta</option>
+            <option value="audiencia">Audiência</option>
+            <option value="prazo">Prazo</option>
+          </select>
+          <span class="field-error" id="err_tipo">Selecione o tipo de evento</span>
+        </div>
+        <div class="field">
+          <label for="titulo">Título / Assunto <span class="req">*</span></label>
+          <input type="text" id="titulo" name="titulo" placeholder="Ex: Reunião de Proposta" required>
+          <span class="field-error" id="err_titulo">Informe o título do evento</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="data_evento">Data e Horário <span class="req">*</span></label>
+          <input type="datetime-local" id="data_evento" name="data_evento" required>
+          <span class="field-error" id="err_data">Informe a data e horário</span>
+        </div>
+        <div class="field">
+          <label for="local">Local</label>
+          <input type="text" id="local" name="local" placeholder="Ex: Virtual / Foro Central">
+        </div>
+      </div>
+
+      <div id="campoProcesso" class="field" style="display:none;">
+        <label for="numero_processo">Número do Processo</label>
+        <input type="text" id="numero_processo" name="numero_processo" placeholder="Ex: 1046010-18.2026.8.26.0053">
+        <span class="field-hint">Preencha para vincular ao processo no sistema</span>
+      </div>
+
+      <div class="field">
+        <label for="link_videoconferencia">Link de Videoconferência</label>
+        <input type="url" id="link_videoconferencia" name="link_videoconferencia" placeholder="Ex: https://meet.google.com/...">
+      </div>
+
+      <div class="sep"></div>
+
+      <!-- Dados do cliente -->
+      <div class="section-label">Dados do Cliente</div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="cliente_nome">Nome do Cliente <span class="req">*</span></label>
+          <input type="text" id="cliente_nome" name="cliente_nome" placeholder="Nome completo" required>
+          <span class="field-error" id="err_cliente">Informe o nome do cliente</span>
+        </div>
+        <div class="field">
+          <label for="cliente_whatsapp">WhatsApp do Cliente <span class="req">*</span></label>
+          <input type="tel" id="cliente_whatsapp" name="cliente_whatsapp" placeholder="55 11 99999-9999" required>
+          <span class="field-hint">Com código do país. Ex: 5511999999999</span>
+          <span class="field-error" id="err_wpp">Informe o WhatsApp do cliente</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <!-- Advogado -->
+      <div class="section-label">Advogado Responsável</div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="advogado_nome">Advogado</label>
+          <select id="advogado_nome" name="advogado_nome">
+            <option value="">Selecione...</option>
+            <option value="Gabriel" data-id="1">Gabriel</option>
+            <option value="Luana Antunes" data-id="2">Luana Antunes</option>
+            <option value="Thaigo Vadala" data-id="3">Thaigo Vadala</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="observacoes">Observações</label>
+          <textarea id="observacoes" name="observacoes" placeholder="Informações adicionais sobre o evento..."></textarea>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        <div class="spinner"></div>
+        <span class="btn-text">⚖️ Confirmar Agendamento</span>
+      </button>
+
+    </form>
+
+    <!-- Success -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <h2>Agendamento Confirmado!</h2>
+      <p>O evento foi registrado com sucesso. Uma mensagem de confirmação foi enviada para o WhatsApp do cliente.</p>
+
+      <div class="success-detail" id="successDetail"></div>
+
+      <button class="btn-novo" onclick="resetForm()">
+        + Novo Agendamento
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Sistema de gestão — <a href="#">Pianta Vadalá Advocacia</a> · Powered by Vallidus Digital
+  </div>
+
+</div>
+
+<script>
+  // Webhook URL — substitua pela URL real do n8n
+  const WEBHOOK_URL = 'https://n8n.vallidusdigital.cloud/webhook/pianta-vadala-evento';
+
+  // Mostrar campo processo só para audiência
+  document.getElementById('tipo').addEventListener('change', function() {
+    const campo = document.getElementById('campoProcesso');
+    campo.style.display = this.value === 'audiencia' ? 'block' : 'none';
+  });
+
+  // Formatar WhatsApp
+  document.getElementById('cliente_whatsapp').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '');
+  });
+
+  // Advogado ID automático
+  document.getElementById('advogado_nome').addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    this._selectedId = opt.dataset.id || null;
+  });
+
+  function showError(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('visible', show);
+  }
+
+  function markField(id, error) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('error', error);
+  }
+
+  function validate() {
+    let valid = true;
+
+    const tipo = document.getElementById('tipo').value;
+    const titulo = document.getElementById('titulo').value.trim();
+    const data = document.getElementById('data_evento').value;
+    const cliente = document.getElementById('cliente_nome').value.trim();
+    const wpp = document.getElementById('cliente_whatsapp').value.trim();
+
+    showError('err_tipo', !tipo); markField('tipo', !tipo);
+    showError('err_titulo', !titulo); markField('titulo', !titulo);
+    showError('err_data', !data); markField('data_evento', !data);
+    showError('err_cliente', !cliente); markField('cliente_nome', !cliente);
+    showError('err_wpp', !wpp); markField('cliente_whatsapp', !wpp);
+
+    if (!tipo || !titulo || !data || !cliente || !wpp) valid = false;
+    return valid;
+  }
+
+  function formatDate(dt) {
+    if (!dt) return '';
+    const d = new Date(dt);
+    return d.toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' });
+  }
+
+  document.getElementById('agendaForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const btn = document.getElementById('btnSubmit');
+    const alert = document.getElementById('alertError');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    alert.classList.remove('visible');
+
+    const advSel = document.getElementById('advogado_nome');
+    const advId = advSel._selectedId ? parseInt(advSel._selectedId) : null;
+
+    const payload = {
+      tipo: document.getElementById('tipo').value,
+      titulo: document.getElementById('titulo').value.trim(),
+      data_evento: document.getElementById('data_evento').value,
+      local: document.getElementById('local').value.trim() || null,
+      numero_processo: document.getElementById('numero_processo').value.trim() || null,
+      link_videoconferencia: document.getElementById('link_videoconferencia').value.trim() || null,
+      cliente_nome: document.getElementById('cliente_nome').value.trim(),
+      cliente_whatsapp: document.getElementById('cliente_whatsapp').value.trim(),
+      advogado_nome: advSel.value || null,
+      advogado_id: advId,
+      observacoes: document.getElementById('observacoes').value.trim() || ''
+    };
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success !== false) {
+        // Mostrar sucesso
+        const detail = document.getElementById('successDetail');
+        detail.innerHTML = `
+          <div class="row"><span class="key">Evento</span><span class="val">${payload.titulo}</span></div>
+          <div class="row"><span class="key">Data</span><span class="val">${formatDate(payload.data_evento)}</span></div>
+          <div class="row"><span class="key">Local</span><span class="val">${payload.local || 'Virtual'}</span></div>
+          <div class="row"><span class="key">Cliente</span><span class="val">${payload.cliente_nome}</span></div>
+          <div class="row"><span class="key">WhatsApp confirmado</span><span class="val">✓ ${payload.cliente_whatsapp}</span></div>
+          ${data.evento_id ? `<div class="row"><span class="key">ID do evento</span><span class="val">#${data.evento_id}</span></div>` : ''}
+        `;
+        document.getElementById('agendaForm').style.display = 'none';
+        document.getElementById('successScreen').classList.add('visible');
+      } else {
+        throw new Error(data.mensagem || 'Erro ao processar o agendamento');
+      }
+    } catch (err) {
+      alert.textContent = '⚠️ ' + (err.message || 'Erro de conexão. Tente novamente.');
+      alert.classList.add('visible');
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  });
+
+  function resetForm() {
+    document.getElementById('agendaForm').reset();
+    document.getElementById('agendaForm').style.display = 'block';
+    document.getElementById('successScreen').classList.remove('visible');
+    document.getElementById('campoProcesso').style.display = 'none';
+    document.querySelectorAll('.field-error').forEach(e => e.classList.remove('visible'));
+    document.querySelectorAll('input, select, textarea').forEach(e => e.classList.remove('error'));
+  }
+</script>
+</body>
+</html>
