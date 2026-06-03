@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Pianta Vadalá Advocacia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #152236;
+  --navy3: #1e3250;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --gold3: rgba(201,168,76,0.15);
+  --cream: #f5f0e8;
+  --white: #ffffff;
+  --muted: #8a94a0;
+  --border: rgba(255,255,255,0.07);
+  --green: #2ecc71;
+  --orange: #f39c12;
+  --red: #e74c3c;
+  --blue: #3498db;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background texture */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 800px 600px at 80% 20%, rgba(201,168,76,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 800px at 10% 80%, rgba(30,50,80,0.6) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top:0; left:0; bottom:0;
+  width: 240px;
+  background: var(--navy2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  padding: 0;
+}
+
+.sidebar-top {
+  padding: 28px 24px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.brand-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--navy3), var(--navy));
+  border: 1px solid var(--gold3);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 12px 4px;
+  font-weight: 500;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 400;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+.nav-item.active { background: var(--gold3); color: var(--gold2); }
+.nav-item .ni { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-bottom {
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.last-update {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 300;
+}
+
+.last-update span { color: var(--gold); }
+
+/* Main */
+.main {
+  margin-left: 240px;
+  padding: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.topbar-left h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.topbar-left p {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 300;
+  margin-top: 4px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--gold3);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 8px;
+  color: var(--gold2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover { background: rgba(201,168,76,0.2); }
+.btn-refresh.spinning .refresh-icon { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.kpi-card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.kpi-card:hover { transform: translateY(-2px); border-color: rgba(201,168,76,0.2); }
+
+.kpi-card::after {
+  content:'';
+  position:absolute;
+  top:0; right:0;
+  width:80px; height:80px;
+  border-radius: 0 12px 0 80px;
+  opacity: 0.06;
+}
+
+.kpi-card.gold::after { background: var(--gold); }
+.kpi-card.green::after { background: var(--green); }
+.kpi-card.orange::after { background: var(--orange); }
+.kpi-card.blue::after { background: var(--blue); }
+
+.kpi-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.kpi-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.kpi-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.kpi-badge.gold { background: var(--gold3); color: var(--gold2); }
+.kpi-badge.green { background: rgba(46,204,113,0.12); color: var(--green); }
+.kpi-badge.orange { background: rgba(243,156,18,0.12); color: var(--orange); }
+.kpi-badge.blue { background: rgba(52,152,219,0.12); color: var(--blue); }
+
+/* Section */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content:'';
+  width:3px; height:18px;
+  background: var(--gold);
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-tab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.filter-tab:hover { border-color: rgba(201,168,76,0.3); color: var(--gold2); }
+.filter-tab.active { background: var(--gold3); border-color: rgba(201,168,76,0.3); color: var(--gold2); }
+
+/* Grid layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* Table */
+.table-card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table-scroll { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr {
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+tbody td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--white);
+  font-weight: 300;
+  vertical-align: middle;
+}
+
+.tipo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tipo-badge.reuniao { background: rgba(52,152,219,0.15); color: #5dade2; }
+.tipo-badge.audiencia { background: rgba(231,76,60,0.15); color: #ec7063; }
+.tipo-badge.consulta { background: rgba(46,204,113,0.15); color: #58d68d; }
+.tipo-badge.prazo { background: rgba(243,156,18,0.15); color: #f8c471; }
+
+.lembrete-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  title: '';
+}
+
+.dot.sent { background: var(--green); }
+.dot.pending { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
+
+.data-cell {
+  white-space: nowrap;
+}
+
+.data-cell .date { color: var(--white); font-weight: 400; }
+.data-cell .time { color: var(--muted); font-size: 12px; }
+
+.advogado-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--navy3);
+  border: 1px solid var(--gold3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--gold2);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Side panel */
+.side-panel { display: flex; flex-direction: column; gap: 16px; }
+
+.panel-card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Próximos eventos */
+.event-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.event-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.event-date-box {
+  background: var(--navy3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  text-align: center;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.event-date-box .day {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1;
+}
+
+.event-date-box .mon {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.event-info { flex: 1; min-width: 0; }
+
+.event-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.event-meta {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.urgente-tag {
+  background: rgba(231,76,60,0.15);
+  color: #ec7063;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* Advogados stats */
+.adv-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.adv-item:last-child { border-bottom: none; }
+
+.adv-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--navy3);
+  border: 1px solid var(--gold3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  color: var(--gold2);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.adv-info { flex: 1; }
+.adv-name { font-size: 13px; font-weight: 500; color: var(--white); }
+.adv-count { font-size: 11px; color: var(--muted); font-weight: 300; }
+
+.adv-bar-wrap {
+  width: 60px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.adv-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+
+.empty-state .empty-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+.empty-state p { font-size: 14px; font-weight: 300; }
+
+/* Loading */
+.loading-row td {
+  text-align: center;
+  padding: 40px !important;
+  color: var(--muted);
+}
+
+.pulse {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pulse span {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.pulse span:nth-child(2) { animation-delay: 0.2s; }
+.pulse span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Error */
+.error-bar {
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #ec7063;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.error-bar.visible { display: block; }
+
+/* Notion link */
+.notion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.notion-link:hover { color: var(--gold2); }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Anim */
+.fade-in { animation: fadeIn 0.4s ease both; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="brand">
+      <div class="brand-icon">⚖️</div>
+      <div>
+        <div class="brand-name">Pianta Vadalá</div>
+        <div class="brand-sub">Advocacia</div>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Painel</div>
+    <button class="nav-item active" onclick="filterAll()">
+      <span class="ni">📊</span> Visão Geral
+    </button>
+    <button class="nav-item" onclick="filterByTipo('audiencia')">
+      <span class="ni">⚖️</span> Audiências
+    </button>
+    <button class="nav-item" onclick="filterByTipo('reuniao')">
+      <span class="ni">🤝</span> Reuniões
+    </button>
+    <button class="nav-item" onclick="filterByTipo('consulta')">
+      <span class="ni">💬</span> Consultas
+    </button>
+    <div class="nav-label">Ações</div>
+    <button class="nav-item" onclick="window.open('https://gabrieldovalleogestor-del.github.io/pianta-vadala-agenda/', '_blank')">
+      <span class="ni">➕</span> Novo Evento
+    </button>
+    <button class="nav-item" onclick="window.open('https://www.notion.so', '_blank')">
+      <span class="ni">📝</span> Abrir Notion
+    </button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="last-update">Atualizado: <span id="lastUpdate">—</span></div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+
+  <div class="topbar fade-in">
+    <div class="topbar-left">
+      <h1>Central de Gestão</h1>
+      <p id="subtitleDate">Carregando dados...</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-refresh" id="btnRefresh" onclick="loadData()">
+        <span class="refresh-icon">↻</span>
+        Atualizar
+      </button>
+    </div>
+  </div>
+
+  <div class="error-bar" id="errorBar"></div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid fade-in">
+    <div class="kpi-card gold">
+      <span class="kpi-icon">📅</span>
+      <div class="kpi-value" id="kpiTotal">—</div>
+      <div class="kpi-label">Total de Eventos</div>
+      <span class="kpi-badge gold">Agenda</span>
+    </div>
+    <div class="kpi-card green">
+      <span class="kpi-icon">🔜</span>
+      <div class="kpi-value" id="kpiProximos">—</div>
+      <div class="kpi-label">Próximos 7 dias</div>
+      <span class="kpi-badge green">Esta semana</span>
+    </div>
+    <div class="kpi-card orange">
+      <span class="kpi-icon">⚖️</span>
+      <div class="kpi-value" id="kpiAudiencias">—</div>
+      <div class="kpi-label">Audiências</div>
+      <span class="kpi-badge orange">Tribunal</span>
+    </div>
+    <div class="kpi-card blue">
+      <span class="kpi-icon">🔔</span>
+      <div class="kpi-value" id="kpiLembretes">—</div>
+      <div class="kpi-label">Lembretes Pendentes</div>
+      <span class="kpi-badge blue">Automático</span>
+    </div>
+  </div>
+
+  <!-- Content grid -->
+  <div class="content-grid">
+
+    <!-- Tabela principal -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">Todos os Eventos</div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter('todos', this)">Todos</button>
+          <button class="filter-tab" onclick="setFilter('proximos', this)">Próximos</button>
+          <button class="filter-tab" onclick="setFilter('audiencia', this)">Audiências</button>
+          <button class="filter-tab" onclick="setFilter('reuniao', this)">Reuniões</button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Advogado</th>
+                <th>Lembretes</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr class="loading-row">
+                <td colspan="6">
+                  <div class="pulse">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <div style="margin-top:8px;font-size:13px;">Carregando eventos...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="side-panel">
+
+      <!-- Próximos eventos -->
+      <div class="panel-card">
+        <div class="panel-title">📌 Próximos Eventos</div>
+        <div id="proximosPanel">
+          <div class="empty-state">
+            <span class="empty-icon">⏳</span>
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advogados -->
+      <div class="panel-card">
+        <div class="panel-title">👤 Por Advogado</div>
+        <div id="advogadosPanel">
+          <div class="empty-state">
+            <span class="empty-icon">⏳</span>
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+const API = 'https://n8n.vallidusdigital.cloud/webhook/pianta-vadala-dashboard';
+let allEvents = [];
+let currentFilter = 'todos';
+
+const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MESES_FULL = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+function formatDate(str) {
+  if (!str) return { date: '—', time: '' };
+  const d = new Date(str);
+  if (isNaN(d)) return { date: str, time: '' };
+  const day = String(d.getDate()).padStart(2,'0');
+  const mon = String(d.getMonth()+1).padStart(2,'0');
+  const year = d.getFullYear();
+  const h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2,'0');
+  const hasTime = str.includes('T') && !(h === 0 && m === '00');
+  return {
+    date: `${day}/${mon}/${year}`,
+    time: hasTime ? `${String(h).padStart(2,'0')}:${m}` : '',
+    raw: d
+  };
+}
+
+function getTipoBadge(tipo) {
+  const map = {
+    reuniao: { label: '🤝 Reunião', cls: 'reuniao' },
+    audiencia: { label: '⚖️ Audiência', cls: 'audiencia' },
+    consulta: { label: '💬 Consulta', cls: 'consulta' },
+    prazo: { label: '⏰ Prazo', cls: 'prazo' },
+  };
+  const t = map[tipo] || { label: tipo || '—', cls: 'reuniao' };
+  return `<span class="tipo-badge ${t.cls}">${t.label}</span>`;
+}
+
+function getInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+}
+
+function isProximo(str, days=7) {
+  if (!str) return false;
+  const d = new Date(str);
+  const now = new Date();
+  const diff = (d - now) / (1000*60*60*24);
+  return diff >= 0 && diff <= days;
+}
+
+function isFuturo(str) {
+  if (!str) return false;
+  return new Date(str) >= new Date();
+}
+
+function getLembreteDots(e) {
+  const dots = [
+    { key: 'lembrete_3d', label: '3 dias' },
+    { key: 'lembrete_1d', label: '1 dia' },
+    { key: 'lembrete_2h', label: '2 horas' },
+  ];
+  return `<div class="lembrete-dots">${dots.map(d =>
+    `<div class="dot ${e[d.key] ? 'sent' : 'pending'}" title="Lembrete ${d.label}: ${e[d.key] ? 'enviado ✓' : 'pendente'}"></div>`
+  ).join('')}</div>`;
+}
+
+function renderTable(events) {
+  const tbody = document.getElementById('tableBody');
+  if (!events.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">📭</span><p>Nenhum evento encontrado</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = events.map(e => {
+    const fd = formatDate(e.data_evento);
+    return `
+      <tr class="fade-in">
+        <td style="max-width:200px">
+          <div style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.titulo || '—'}</div>
+          ${e.local ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 ${e.local}</div>` : ''}
+        </td>
+        <td>${getTipoBadge(e.tipo)}</td>
+        <td class="data-cell">
+          <div class="date">${fd.date}</div>
+          ${fd.time ? `<div class="time">🕐 ${fd.time}</div>` : ''}
+        </td>
+        <td style="font-size:13px">${e.cliente_nome || '<span style="color:var(--muted)">—</span>'}</td>
+        <td>
+          <div class="advogado-chip">
+            <div class="avatar">${getInitials(e.advogado_nome)}</div>
+            <span style="font-size:12px">${e.advogado_nome || '—'}</span>
+          </div>
+        </td>
+        <td>${getLembreteDots(e)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderProximos(events) {
+  const panel = document.getElementById('proximosPanel');
+  const proximos = events
+    .filter(e => isFuturo(e.data_evento))
+    .sort((a,b) => new Date(a.data_evento) - new Date(b.data_evento))
+    .slice(0, 5);
+
+  if (!proximos.length) {
+    panel.innerHTML = `<div class="empty-state"><span class="empty-icon">✅</span><p>Nenhum evento futuro</p></div>`;
+    return;
+  }
+
+  panel.innerHTML = proximos.map(e => {
+    const d = new Date(e.data_evento);
+    const isUrgente = isProximo(e.data_evento, 1);
+    return `
+      <div class="event-item">
+        <div class="event-date-box">
+          <div class="day">${d.getDate()}</div>
+          <div class="mon">${MESES[d.getMonth()]}</div>
+        </div>
+        <div class="event-info">
+          <div class="event-title">${e.titulo}</div>
+          <div class="event-meta">
+            <span>${getTipoBadge(e.tipo)}</span>
+            ${e.advogado_nome ? `<span>👤 ${e.advogado_nome.split(' ')[0]}</span>` : ''}
+            ${isUrgente ? '<span class="urgente-tag">⚡ Hoje/Amanhã</span>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAdvogados(events) {
+  const panel = document.getElementById('advogadosPanel');
+  const counts = {};
+  events.forEach(e => {
+    if (e.advogado_nome) counts[e.advogado_nome] = (counts[e.advogado_nome]||0) + 1;
+  });
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0]?.[1] || 1;
+
+  if (!sorted.length) {
+    panel.innerHTML = `<div class="empty-state"><span class="empty-icon">👤</span><p>Sem dados</p></div>`;
+    return;
+  }
+
+  panel.innerHTML = sorted.map(([name, count]) => `
+    <div class="adv-item">
+      <div class="adv-avatar">${getInitials(name)}</div>
+      <div class="adv-info">
+        <div class="adv-name">${name}</div>
+        <div class="adv-count">${count} evento${count>1?'s':''}</div>
+      </div>
+      <div class="adv-bar-wrap">
+        <div class="adv-bar" style="width:${Math.round((count/max)*100)}%"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateKPIs(events) {
+  document.getElementById('kpiTotal').textContent = events.length;
+  document.getElementById('kpiProximos').textContent = events.filter(e => isProximo(e.data_evento, 7)).length;
+  document.getElementById('kpiAudiencias').textContent = events.filter(e => e.tipo === 'audiencia').length;
+  const lembretesPendentes = events.filter(e =>
+    isFuturo(e.data_evento) && (!e.lembrete_3d || !e.lembrete_1d || !e.lembrete_2h)
+  ).length;
+  document.getElementById('kpiLembretes').textContent = lembretesPendentes;
+}
+
+function applyFilter(filter) {
+  currentFilter = filter;
+  let filtered = [...allEvents];
+  if (filter === 'proximos') filtered = filtered.filter(e => isProximo(e.data_evento, 7));
+  else if (filter === 'audiencia') filtered = filtered.filter(e => e.tipo === 'audiencia');
+  else if (filter === 'reuniao') filtered = filtered.filter(e => e.tipo === 'reuniao');
+  renderTable(filtered);
+}
+
+function setFilter(filter, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilter(filter);
+}
+
+function filterAll() {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  applyFilter('todos');
+}
+
+function filterByTipo(tipo) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  applyFilter(tipo);
+}
+
+async function loadData() {
+  const btn = document.getElementById('btnRefresh');
+  const errorBar = document.getElementById('errorBar');
+  btn.classList.add('spinning');
+  errorBar.classList.remove('visible');
+
+  try {
+    const res = await fetch(API, { method: 'GET', headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    allEvents = Array.isArray(data) ? data : (data.data || []);
+
+    // Sort by date
+    allEvents.sort((a,b) => new Date(a.data_evento) - new Date(b.data_evento));
+
+    updateKPIs(allEvents);
+    applyFilter(currentFilter);
+    renderProximos(allEvents);
+    renderAdvogados(allEvents);
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('subtitleDate').textContent =
+      `${now.getDate()} de ${MESES_FULL[now.getMonth()]} de ${now.getFullYear()} · ${allEvents.length} eventos carregados`;
+
+  } catch(err) {
+    errorBar.textContent = `⚠️ Erro ao carregar dados: ${err.message}. Verifique se o webhook está ativo no n8n.`;
+    errorBar.classList.add('visible');
+    document.getElementById('tableBody').innerHTML = `
+      <tr class="loading-row">
+        <td colspan="6">
+          <div style="font-size:13px;color:var(--muted)">Não foi possível carregar os eventos. Tente novamente.</div>
+        </td>
+      </tr>
+    `;
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+
+// Auto-refresh a cada 5 minutos
+setInterval(loadData, 5 * 60 * 1000);
+
+// Load inicial
+loadData();
+</script>
+</body>
+</html>
